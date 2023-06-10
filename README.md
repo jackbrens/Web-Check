@@ -16,7 +16,7 @@
 
 - 根目录下新建 `.babelrc` 文件，添加 `babel` 预设
 
-  - ```json
+  - ```js
     // .babelrc 文件内容
     {
       "presets": ["@babel/preset-env"]
