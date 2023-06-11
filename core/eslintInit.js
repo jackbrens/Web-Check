@@ -4,12 +4,13 @@
  * // 3、在项目的根目录创建 .eslintrc.js、.eslintignore、.prettierrc.js、.prettieringore
 */
 import fs from 'fs-extra'
-import { getPackageJson, getPath } from '../utils/env.js'
+import { getPackageJson, getPath, writeFile } from '../utils/env.js'
 import { eslintrc } from '../template/eslint/eslintrc.js'
 import { eslintignore } from '../template/eslint/eslintignore.js'
 import { prettierrc } from '../template/prettier/prettierrc.js'
 import { prettierignore } from '../template/prettier/prettierignore.js'
 import { editorconfig } from '../template/editorconfig/editorconfig.js'
+import { textLog } from '../utils/tool.js'
 
 // 需要安装的依赖
 const baseDevs = {
@@ -24,7 +25,7 @@ const baseDevs = {
 
 // 需要使用的命令
 const customScript = {
-  "lint": "eslint --ext .js,.vue ."
+  "lint": "eslint --fix --ext .js,.vue ./"
 }
 
 export const eslintInit = async () => {
@@ -33,11 +34,13 @@ export const eslintInit = async () => {
   const scripts = { ...packJson.scripts }
   for (const key in baseDevs) {
     devs[key] = baseDevs[key]
+    textLog(`${key}@${baseDevs[key]} √`)
   }
   packJson.devDependencies = devs
 
   for (const key in customScript) {
     scripts[key] = customScript[key]
+    textLog(`${key}@${customScript[key]} √`)
   }
   packJson.scripts = scripts
 
@@ -45,9 +48,9 @@ export const eslintInit = async () => {
   fs.writeJsonSync(getPath('package.json'), packJson, { spaces: 2 })
 
   // 写入文件
-  fs.outputFileSync(getPath('./.eslintrc.js'), eslintrc)
-  fs.outputFileSync(getPath('./.eslintignore'), eslintignore)
-  fs.outputFileSync(getPath('./.prettierrc.js'), prettierrc)
-  fs.outputFileSync(getPath('./.prettierignore'), prettierignore)
-  fs.outputFileSync(getPath('./.editorconfig'), editorconfig)
+  writeFile('./.eslintrc.js', eslintrc)
+  writeFile('./.eslintignore', eslintignore)
+  writeFile('./.prettierrc.js', prettierrc)
+  writeFile('./.prettierignore', prettierignore)
+  writeFile('./.editorconfig', editorconfig)
 }

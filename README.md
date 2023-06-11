@@ -51,3 +51,22 @@ fs.outputFileSync(getPath('./.eslintrc.js'), eslintrc)
 fs.outputFileSync(getPath('./.eslintignore'), eslintignore)
 ```
 
+
+
+## 使用 cross-spawn 无法执行 npx 命令
+
+解决办法：
+
+因为使用 `cross-spawn` 无法使用 `npx` 命令，所以可以在 `package.json` 的 `scripts` 中添加命令，然后用 `npm` 执行他
+
+```json
+import spawn from "cross-spawn"
+
+spawn.sync(`npm set-script "prepare" "husky install"`)
+spawn.sync(`npm run prepare`)
+```
+
+**这里出现的问题是 husky 无法安装，因为cross-spawn 不支持 npx 命令，我们只是将它添加到 package.json 而已， 所以我们可以用 npm 代替执行**
+
+
+

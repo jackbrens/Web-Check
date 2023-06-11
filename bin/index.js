@@ -5,6 +5,7 @@ import packJson from "../package.json" assert { type: "json" }
 import { initProjectFile } from "../utils/env.js"
 import { eslintInit } from "../core/eslintInit.js"
 import chalk from "chalk"
+import { huskyInit } from "../core/huskyInit.js"
 
 // 首行提醒
 program.name(packJson.name).usage('<commend> [options]')
@@ -17,16 +18,14 @@ program
   .description('初始化项目的规范构建')
   .action(async (option) => {
    
-    // 1、（初始化项目）
-    initProjectFile()
+    // 初始化项目
+    await initProjectFile()
     
-    // 安装 eslint 和 preitter 并自动生成配置文件
-    eslintInit()
+    // 安装 eslint、preitter 和 editorConfig 并自动生成配置文件
+    await eslintInit()
 
-    // 安装 editorConfig 并自动生成配置文件
-
-    // 5、安装 husky、lint-staged、commlint、commitizen
-    // 6、改造 package.json 文件，添加 lint-staged、husky 等字段
+    // 安装 husky、lint-staged、commlint、commitizen 并自动生成配置文件
+    await huskyInit()
 
     // done 结束
     console.log(chalk.green.bold(`

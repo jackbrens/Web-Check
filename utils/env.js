@@ -18,17 +18,32 @@ export const setEnv = (key, val) => {
   return env[key] = val
 }
 
+/**
+ * 把文件写入到当前项目中
+ * @param {string} paths 需要生成的路径
+ * @param {string} templateStr 文件的模板
+ * @returns 
+ */
+export const writeFile = (paths, templateStr) => {
+  return fs.outputFileSync(getPath(paths), templateStr)
+}
+
+/**
+ * 获取文件路径
+ * @param {string} paths 
+ * @returns 
+ */
 export const getPath = (paths) => {
   return path.join(process.cwd(), paths)
 }
 
+/**
+ * // 获取当前项目的 package.json 文件
+*/
 export const getPackageJson = async () => {
   const json = await fs.readJSON(path.join(process.cwd(), 'package.json'))
   return json
 }
-
-
-
 
 export const isVue2 = (version) => {
   return Number(version.substring(0, 1)) === 2
