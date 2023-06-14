@@ -3,14 +3,13 @@
  * // 2、添加进 package.json 的 dev 依赖中，并且在 script 字段中 添加 "lint" 命令
  * // 3、在项目的根目录创建 .eslintrc.js、.eslintignore、.prettierrc.js、.prettieringore
 */
-import fs from 'fs-extra'
-import { getPackageJson, getPath, writeFile } from '../utils/env.js'
-import { eslintrc } from '../template/eslint/eslintrc.js'
+import { getEnv, writeFile } from '../utils/env.js'
+import { eslintrcFun } from '../template/eslint/eslintrc.js'
 import { eslintignore } from '../template/eslint/eslintignore.js'
 import { prettierrc } from '../template/prettier/prettierrc.js'
 import { prettierignore } from '../template/prettier/prettierignore.js'
 import { editorconfig } from '../template/editorconfig/editorconfig.js'
-import { textLog } from '../utils/tool.js'
+import { runCommand, writeInPack } from '../utils/tool.js'
 
 // 需要安装的依赖
 const baseDevs = {
@@ -23,32 +22,23 @@ const baseDevs = {
 	"prettier-eslint": "^15.0.1",
 }
 
-// 需要使用的命令
-const customScript = {
-  "lint": "eslint --fix --ext .js,.vue ./"
-}
-
 export const eslintInit = async () => {
-  const packJson = await getPackageJson()
-  const devs = { ...packJson.devDependencies }
-  const scripts = { ...packJson.scripts }
-  for (const key in baseDevs) {
-    devs[key] = baseDevs[key]
-    textLog(`${key}@${baseDevs[key]} √`)
-  }
-  packJson.devDependencies = devs
+  let devDependencies = baseDevs
 
-  for (const key in customScript) {
-    scripts[key] = customScript[key]
-    textLog(`${key}@${customScript[key]} √`)
+  if (getEnv('isVue3') && getEnv('isTypeScript')) {
+    devDependencies = {
+      ...devDependencies,
+      "@typescript-eslint/parser": "^5.9.11",
+      "@typescript-eslint/eslint-plugin": "^5.9.11"
+    }
   }
-  packJson.scripts = scripts
 
-  // 最后一个参数 { spaces: 2 } ，保证json文件的格式不变，并且缩进为两个字符
-  fs.writeJsonSync(getPath('package.json'), packJson, { spaces: 2 })
+  // 写入依赖到 package.json 中
+  await writeInPack(devDependencies, 'devDependencies')
+  runCommand(`npm set-script "lint" "eslint --fix --ext .js,.vue ."`)
 
   // 写入文件
-  writeFile('./.eslintrc.js', eslintrc)
+  writeFile('./.eslintrc.js', eslintrcFun())
   writeFile('./.eslintignore', eslintignore)
   writeFile('./.prettierrc.js', prettierrc)
   writeFile('./.prettierignore', prettierignore)

@@ -1,5 +1,4 @@
-export const prettierrc = `
-module.exports = {
+export const prettierrc = `module.exports = {
 	// 两个缩进
 	tabWidth: 2,
 	// jsx使用单引号

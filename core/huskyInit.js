@@ -31,14 +31,6 @@ export const config = {
 
 
 export const huskyInit = async () => {
-  // 检查是否有 .git 目录
-  if (!fs.pathExistsSync('.git')) {
-    console.log(chalk.red.bold(`
-      请先初始化git！！！
-    `))
-    process.exit(0)
-  }
-
   runCommand('npm add husky@8.0.1 -D')
   runCommand(`npm set-script "prepare" "husky install"`)
   runCommand(`npm run prepare`)

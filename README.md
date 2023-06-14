@@ -76,3 +76,15 @@ spawn.sync(`npm run prepare`)
 
 
 
+# 多版本差异化配置（开发进度）
+
+- vue2
+  - 默认是vue2 :white_check_mark:
+- vue3
+  - 项目是否支持 typescript ？:white_check_mark:
+  - 项目是否支持 vite ？
+- nuxt2
+- nuxt3
+- react
+-  more....
+

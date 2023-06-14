@@ -9,10 +9,13 @@ import path from "path"
 export const env = {
   isVue2: false,
   isVue3: false,
+  isTypeScript: false,
   isWebpack: true, // 默认是 webpack 环境
 }
 
-export const getEnv = (packJson) => {}
+export const getEnv = (key) => {
+  return env[key]
+}
 
 export const setEnv = (key, val) => {
   return env[key] = val
@@ -46,18 +49,27 @@ export const getPackageJson = async () => {
 }
 
 export const isVue2 = (version) => {
-  return Number(version.substring(0, 1)) === 2
+  return version.substring(0, 2).includes('2')
 }
 
 export const isVue3 = (version) => {
-  return Number(version.substring(0, 1)) === 3
+  return version.substring(0, 2).includes('3')
 }
 
 export const initProjectFile = async () => {
+
+  // 检查是否有 .git 目录
+  if (!fs.pathExistsSync('.git')) {
+    console.log(chalk.red.bold(`
+      请先初始化git！！！
+    `))
+    process.exit(0)
+  }
   const packagejson = await getPackageJson()
   // 获取 packagejson 的依赖项
   const deps = { ...packagejson.devDependencies, ...packagejson.dependencies }
   const vueVersion = deps['vue']
+  const tsVersion = deps['typescript']
 
   // 判断 vue 的版本
   if (vueVersion) {
@@ -67,12 +79,15 @@ export const initProjectFile = async () => {
     }
     if (isVue3(vueVersion)) {
       setEnv('isVue3', true)
+      if (tsVersion) {
+        setEnv('isTypeScript', true)
+      }
       return
     }
   } else {
-    console.log('\n')
-    console.log(chalk.red.bold(' 请您安装vue或暂不支持除Vue之外的其他版本...'))
-    console.log('\n')
+    console.log(chalk.red.bold(`
+    请您安装vue或暂不支持除Vue 2/3之外的其他版本...
+    `))
 
     // 如果出错就退出
     process.exit(0)
