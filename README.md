@@ -10,6 +10,24 @@
 
 
 
+# 使用方法
+
+安装依赖
+
+```
+yarn add @jackbrens/web-check -D
+// or
+npm i @jackbrens/web-check -D
+```
+
+运行命令
+
+```
+web-check init
+```
+
+
+
 
 
 # 踩坑合集
